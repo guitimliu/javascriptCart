@@ -7,7 +7,7 @@ function init() {
 init();
 
 function renderProduct() {
-    axios.get(`https://livejs-api.hexschool.io/api/livejs/v1/customer/atht78fnvcxuz55cv3niiaaf8pv1/products`)
+    axios.get(`https://livejs-api.hexschool.io/api/livejs/v1/customer/guitimliu/products`)
     .then((res) => {
         let productList = res.data.products;
         let str = '';
@@ -35,7 +35,7 @@ productWrap.addEventListener('click', (e) => {
         return;
     }
     console.log(e.target.getAttribute('data-id'));
-    axios.post(`https://livejs-api.hexschool.io/api/livejs/v1/customer/atht78fnvcxuz55cv3niiaaf8pv1/carts`,{
+    axios.post(`https://livejs-api.hexschool.io/api/livejs/v1/customer/guitimliu/carts`,{
         data: {
             productId: e.target.getAttribute('data-id'),
             quantity: 1,
@@ -51,7 +51,7 @@ productWrap.addEventListener('click', (e) => {
 })
 
 function myCart() {
-    axios.get(`https://livejs-api.hexschool.io/api/livejs/v1/customer/atht78fnvcxuz55cv3niiaaf8pv1/carts
+    axios.get(`https://livejs-api.hexschool.io/api/livejs/v1/customer/guitimliu/carts
     `)
         .then((res) => {
             let orderList = res.data.carts;
