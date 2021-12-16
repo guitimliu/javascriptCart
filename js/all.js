@@ -1,5 +1,9 @@
+// 商品列表
 const productWrap = document.querySelector('.productWrap');
+// 個人購物車清單
+const cartList = document.querySelector('.cartList');
 
+// 初始化
 function init() {
     renderProduct();
     myCart();
@@ -55,12 +59,12 @@ function myCart() {
     `)
         .then((res) => {
             let orderList = res.data.carts;
-            const cartList = document.querySelector('.cartList');
             // console.log(cartList);
             let str = '';
             let allPrice = 0;
             // console.log(orderList);
             orderList.forEach((item) => {
+                // console.log(item.product.id);
                 str += `
                     <tr>
                         <td>
@@ -73,7 +77,7 @@ function myCart() {
                         <td>${item.quantity}</td>
                         <td>${item.product.price * item.quantity}</td>
                         <td class="discardBtn">
-                            <a href="#" class="material-icons">
+                            <a href="javascript:void();" class="material-icons" data-btn="removeItem" data-id="${item.id}">
                                 clear
                             </a>
                         </td>
@@ -84,7 +88,7 @@ function myCart() {
             str += `
                 <tr>
                     <td>
-                        <a href="#" class="discardAllBtn">刪除所有品項</a>
+                        <a href="javascript:void();" class="discardAllBtn">刪除所有品項</a>
                     </td>
                     <td></td>
                     <td></td>
@@ -99,4 +103,36 @@ function myCart() {
         .catch((err) => {
             console.log(err);
         })
+}
+
+cartList.addEventListener('click', (e) => {
+    if (e.target.nodeName !== 'A') {
+        return;
+    }
+
+    if (e.target.getAttribute('data-btn') === 'removeItem') {
+        removeCart(e.target.getAttribute('data-id'));
+        return;
+    }
+
+    if (e.target.getAttribute('class') === 'discardAllBtn') {
+        removeCart('discardAllBtn');
+        return;
+    }
+})
+
+function removeCart(itemID) {
+
+    if (itemID === 'discardAllBtn') {
+        itemID = '';
+    }
+
+    axios.delete(`https://livejs-api.hexschool.io/api/livejs/v1/customer/guitimliu/carts/${itemID}`)
+    .then((res) => {
+        // console.log(res.data.status, res.data.message);
+        myCart();
+    })
+    .catch((err) => {
+        console.log(err);
+    })
 }
