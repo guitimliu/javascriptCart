@@ -46,11 +46,11 @@ productWrap.addEventListener('click', (e) => {
         }
     })
     .then((res) => {
-        console.log(res.data);
         myCart();
+        alert(`已經商品加入購物車`);
     })
     .catch((err) => {
-        console.log(err);
+        // console.log(err);
     })
 })
 
@@ -59,12 +59,9 @@ function myCart() {
     `)
         .then((res) => {
             let orderList = res.data.carts;
-            // console.log(cartList);
             let str = '';
             let allPrice = 0;
-            // console.log(orderList);
             orderList.forEach((item) => {
-                // console.log(item.product.id);
                 str += `
                     <tr>
                         <td>
@@ -129,10 +126,17 @@ function removeCart(itemID) {
 
     axios.delete(`https://livejs-api.hexschool.io/api/livejs/v1/customer/guitimliu/carts/${itemID}`)
     .then((res) => {
-        // console.log(res.data.status, res.data.message);
         myCart();
+        if (itemID === '') {
+            alert(res.data.message);
+        } else {
+            alert(`已將一筆商品刪除`)
+        }
     })
     .catch((err) => {
-        console.log(err);
+        // console.log(Promise.reject(err));
+        if (err.response.status === 400) {
+            alert(err.response.data.message);
+        }
     })
 }
