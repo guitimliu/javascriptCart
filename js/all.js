@@ -71,7 +71,7 @@ function myCart() {
                             </div>
                         </td>
                         <td>${item.product.price}</td>
-                        <td>${item.quantity}</td>
+                        <td><input type="number" value="${item.quantity}" class="itemQuantity" min="1" data-id="${item.id}"></td>
                         <td>${item.product.price * item.quantity}</td>
                         <td class="discardBtn">
                             <a href="javascript:void();" class="material-icons" data-btn="removeItem" data-id="${item.id}">
@@ -118,8 +118,25 @@ cartList.addEventListener('click', (e) => {
     }
 })
 
-function removeCart(itemID) {
+cartList.addEventListener('change', (e) => {
+    // console.log(e.target.getAttribute('data-id'));
+    axios.patch(`https://livejs-api.hexschool.io/api/livejs/v1/customer/guitimliu/carts
+    `, {
+        data: {
+            "id": e.target.getAttribute('data-id'),
+            "quantity": parseInt(e.target.value)
+        }
+    })
+    .then(() => {
+        // console.log(res);
+        myCart();
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+})
 
+function removeCart(itemID) {
     if (itemID === 'discardAllBtn') {
         itemID = '';
     }
@@ -130,7 +147,7 @@ function removeCart(itemID) {
         if (itemID === '') {
             alert(res.data.message);
         } else {
-            alert(`已將一筆商品刪除`)
+            alert(`已將一筆商品刪除`);
         }
     })
     .catch((err) => {
