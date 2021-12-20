@@ -2,36 +2,51 @@
 const productWrap = document.querySelector('.productWrap');
 // 個人購物車清單
 const cartList = document.querySelector('.cartList');
+// 篩選商品分類
+const productSelect = document.querySelector('.productSelect');
+
+productSelect.addEventListener('change', (e) => {
+    getProductData(e.target.value);
+})
 
 // 初始化
 function init() {
-    renderProduct();
+    getProductData();
     myCart();
 }
 init();
 
-function renderProduct() {
+function getProductData(select = '全部') {
     axios.get(`https://livejs-api.hexschool.io/api/livejs/v1/customer/guitimliu/products`)
     .then((res) => {
-        let productList = res.data.products;
-        let str = '';
-        productList.forEach((item) => {
-            str += `
-            <li class="productCard">
-                <h4 class="productType">新品</h4>
-                <img src="${item.images}" alt="">
-                <a href="javascript:void();" class="addCardBtn" data-id="${item.id}">加入購物車</a>
-                <h3>${item.title}</h3>
-                <del class="originPrice">${item.origin_price}</del>
-                <p class="nowPrice">${item.price}</p>
-            </li>
-            `;
-        })
-        productWrap.innerHTML = str;
+        let data = res.data.products;
+
+        if (select !== '全部') {
+            data = res.data.products.filter(item => select === item.category);
+        }
+
+        renderProducts(data);
     })
-    .catch((err) => {
-        console.log(err);
+    .catch(() => {
+        // console.log(err);
     })
+}
+
+function renderProducts(data) {
+    let str = '';
+    data.forEach((item) => {
+        str += `
+        <li class="productCard">
+            <h4 class="productType">新品</h4>
+            <img src="${item.images}" alt="">
+            <a href="javascript:void();" class="addCardBtn" data-id="${item.id}">加入購物車</a>
+            <h3>${item.title}</h3>
+            <del class="originPrice">${item.origin_price}</del>
+            <p class="nowPrice">${item.price}</p>
+        </li>
+        `;
+    })
+    productWrap.innerHTML = str;
 }
 
 productWrap.addEventListener('click', (e) => {
