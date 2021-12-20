@@ -157,3 +157,9 @@ function removeCart(itemID) {
         }
     })
 }
+
+const orderInfoBtn = document.querySelector('.orderInfo-btn');
+// console.log(orderInfoBtn.value);
+// orderInfoBtn.addEventListener('click', (e) => {
+//     console.log(1);
+// })
