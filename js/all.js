@@ -17,7 +17,7 @@ function init() {
 init();
 
 function getProductData(select = '全部') {
-    axios.get(`https://livejs-api.hexschool.io/api/livejs/v1/customer/guitimliu/products`)
+    axios.get(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/products`)
     .then((res) => {
         let data = res.data.products;
 
@@ -54,7 +54,7 @@ productWrap.addEventListener('click', (e) => {
         return;
     }
     console.log(e.target.getAttribute('data-id'));
-    axios.post(`https://livejs-api.hexschool.io/api/livejs/v1/customer/guitimliu/carts`,{
+    axios.post(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts`,{
         data: {
             productId: e.target.getAttribute('data-id'),
             quantity: 1,
@@ -70,7 +70,7 @@ productWrap.addEventListener('click', (e) => {
 })
 
 function myCart() {
-    axios.get(`https://livejs-api.hexschool.io/api/livejs/v1/customer/guitimliu/carts
+    axios.get(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts
     `)
         .then((res) => {
             let orderList = res.data.carts;
@@ -135,7 +135,7 @@ cartList.addEventListener('click', (e) => {
 
 cartList.addEventListener('change', (e) => {
     // console.log(e.target.getAttribute('data-id'));
-    axios.patch(`https://livejs-api.hexschool.io/api/livejs/v1/customer/guitimliu/carts
+    axios.patch(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts
     `, {
         data: {
             "id": e.target.getAttribute('data-id'),
@@ -156,7 +156,7 @@ function removeCart(itemID) {
         itemID = '';
     }
 
-    axios.delete(`https://livejs-api.hexschool.io/api/livejs/v1/customer/guitimliu/carts/${itemID}`)
+    axios.delete(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts/${itemID}`)
     .then((res) => {
         myCart();
         if (itemID === '') {

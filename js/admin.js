@@ -2,9 +2,9 @@
 
 // console.log(axios);
 
-axios.get(`https://livejs-api.hexschool.io/api/livejs/v1/admin/guitimliu/orders`, {
+axios.get(`https://livejs-api.hexschool.io/api/livejs/v1/admin/${api_path}/orders`, {
     headers: {
-        'Authorization': 'aTHT78FNvcXuZ55cV3NiIAaF8pv1'
+        'Authorization': `${api_key}`
     }
 })
     .then((res) => {
