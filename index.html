@@ -298,7 +298,7 @@
         <!-- 呈現商品列表 -->
         <ul class="productWrap">
             <li class="productCard">
-                <p>目前沒有任何商品</p>
+                <p>商品載入中...</p>
             </li>
         </ul>
     </section>
@@ -315,7 +315,7 @@
                     <th width="15%">金額</th>
                     <th width="15%"></th>
                 </thead>
-                <tbody class="cartList"></tbody>
+                <tbody class="cartList"><tr><td>購物車載入中...</td></tr></tbody>
             </table>
         </div>
     </section>
@@ -361,6 +361,7 @@
                         <option value="信用卡">信用卡</option>
                         <option value="超商付款">超商付款</option>
                     </select>
+                    <p class="orderInfo-message" data-message="交易方式">必填</p>
                 </div>
             </div>
             <input type="submit" value="送出預訂資料" class="orderInfo-btn">

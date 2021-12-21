@@ -5,10 +5,6 @@ const cartList = document.querySelector('.cartList');
 // 篩選商品分類
 const productSelect = document.querySelector('.productSelect');
 
-productSelect.addEventListener('change', (e) => {
-    getProductData(e.target.value);
-})
-
 // 初始化
 function init() {
     getProductData();
@@ -16,11 +12,13 @@ function init() {
 }
 init();
 
+// 取得 API 商品資料
 function getProductData(select = '全部') {
     axios.get(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/products`)
     .then((res) => {
         let data = res.data.products;
 
+        // 依商品分類篩選顯示商品
         if (select !== '全部') {
             data = res.data.products.filter(item => select === item.category);
         }
@@ -32,6 +30,7 @@ function getProductData(select = '全部') {
     })
 }
 
+// 渲染商品列表
 function renderProducts(data) {
     let str = '';
     data.forEach((item) => {
@@ -39,7 +38,7 @@ function renderProducts(data) {
         <li class="productCard">
             <h4 class="productType">新品</h4>
             <img src="${item.images}" alt="">
-            <a href="javascript:void();" class="addCardBtn" data-id="${item.id}">加入購物車</a>
+            <a href="#" class="addCardBtn" data-id="${item.id}">加入購物車</a>
             <h3>${item.title}</h3>
             <del class="originPrice">${item.origin_price}</del>
             <p class="nowPrice">${item.price}</p>
@@ -49,11 +48,17 @@ function renderProducts(data) {
     productWrap.innerHTML = str;
 }
 
+// 篩選商品分類
+productSelect.addEventListener('change', (e) => {
+    e.preventDefault();
+    getProductData(e.target.value);
+})
+
 productWrap.addEventListener('click', (e) => {
+    e.preventDefault();
     if (e.target.getAttribute('class') !== 'addCardBtn') {
         return;
     }
-    console.log(e.target.getAttribute('data-id'));
     axios.post(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts`,{
         data: {
             productId: e.target.getAttribute('data-id'),
@@ -89,7 +94,7 @@ function myCart() {
                         <td><input type="number" value="${item.quantity}" class="itemQuantity" min="1" data-id="${item.id}"></td>
                         <td>${item.product.price * item.quantity}</td>
                         <td class="discardBtn">
-                            <a href="javascript:void();" class="material-icons" data-btn="removeItem" data-id="${item.id}">
+                            <a href="#" class="material-icons" data-btn="removeItem" data-id="${item.id}">
                                 clear
                             </a>
                         </td>
@@ -100,7 +105,7 @@ function myCart() {
             str += `
                 <tr>
                     <td>
-                        <a href="javascript:void();" class="discardAllBtn">刪除所有品項</a>
+                        <a href="#" class="discardAllBtn">刪除所有品項</a>
                     </td>
                     <td></td>
                     <td></td>
@@ -118,6 +123,7 @@ function myCart() {
 }
 
 cartList.addEventListener('click', (e) => {
+    e.preventDefault();
     if (e.target.nodeName !== 'A') {
         return;
     }
@@ -134,6 +140,7 @@ cartList.addEventListener('click', (e) => {
 })
 
 cartList.addEventListener('change', (e) => {
+    e.preventDefault();
     // console.log(e.target.getAttribute('data-id'));
     axios.patch(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts
     `, {
@@ -174,7 +181,61 @@ function removeCart(itemID) {
 }
 
 const orderInfoBtn = document.querySelector('.orderInfo-btn');
-// console.log(orderInfoBtn.value);
-// orderInfoBtn.addEventListener('click', (e) => {
-//     console.log(1);
-// })
+
+orderInfoBtn.addEventListener('click', (e) => {
+
+    // 取消預設行為，避免因 form 表單跳轉
+    e.preventDefault();
+    const fieldName = document.querySelectorAll(`.orderInfo-message`);
+    const fields = document.querySelectorAll('.orderInfo-formGroup input, .orderInfo-formGroup select');
+    let unfilled = 0;
+    let sendData = {};
+
+    fields.forEach((item, index) => {
+        // console.log(item.getAttribute('name'));
+
+        if (item.value == '') {
+            // console.log(`未填寫`);
+            // console.log(fieldName[index]);
+            fieldName[index].setAttribute('style', 'display: block;');
+            unfilled++;
+        } else {
+            // console.log(`有填寫`);
+            sendData[item.getAttribute('id')] = item.value;
+            fieldName[index].setAttribute('style', 'display: none;');
+        }
+    })
+
+    // console.log(sendData);
+
+    if (unfilled > 0) {
+        unfilled = 0;
+        return;
+    } else {
+        sendOrderData(sendData);
+    }
+})
+
+function sendOrderData(data) {
+    console.log(data);
+    console.log(`傳送訂單資料`);
+    axios.post(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/orders`, {
+        "data": {
+          "user": {
+            "name": data.customerName,
+            "tel": data.customerPhone,
+            "email": data.customerEmail,
+            "address": data.customerAddress,
+            "payment": data.tradeWay
+          }
+        }
+    })
+    .then((res) => {
+        console.log(res);
+    })
+    .catch((err) => {
+        if (err.response.status === 400) {
+            alert(err.response.data.message);
+        }
+    })
+}
