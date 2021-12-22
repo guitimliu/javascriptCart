@@ -231,7 +231,11 @@ function sendOrderData(data) {
         }
     })
     .then((res) => {
-        console.log(res);
+        // console.log(res);
+        if (res.data.status === true) {
+            myCart();
+            alert(`已將訂單資料送出`);
+        }
     })
     .catch((err) => {
         if (err.response.status === 400) {
