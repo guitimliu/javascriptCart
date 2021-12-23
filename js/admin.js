@@ -183,7 +183,7 @@ function chart(data) {
         bindto: "#chart",
         data: {
             columns: data,
-            type: 'donut'
+            type: 'pie'
         }
     });
 }
