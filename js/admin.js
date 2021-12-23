@@ -133,6 +133,8 @@ function deleteOrder(orderID) {
 }
 
 orderTable.addEventListener('click', (e) => {
+    e.preventDefault();
+
     if (e.target.getAttribute('class') === 'delSingleOrder-Btn') {
         deleteOrder(e.target.getAttribute('data-id'));
     }
@@ -144,6 +146,7 @@ orderTable.addEventListener('click', (e) => {
 })
 
 discardAllBtn.addEventListener('click', (e) => {
+    e.preventDefault();
     deleteOrder('all');
 })
 
@@ -168,6 +171,7 @@ function changeState(id, paid) {
             if (res.data.status === true) {
                 showOrderList();
             }
+            alert('已變更商品狀態');
         })
         .catch((err) => {
             console.log(err.response);
