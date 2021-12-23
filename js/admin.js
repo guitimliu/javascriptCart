@@ -2,6 +2,7 @@ const orderTable = document.querySelector('.orderTable');
 // console.log(orderTable);
 const discardAllBtn = document.querySelector('.discardAllBtn');
 // console.log(discardAllBtn);
+let productRevenue = {};
 
 function init() {
     showOrderList();
@@ -24,6 +25,11 @@ function showOrderList() {
                 let orderItemStr = '';
                 item.products.forEach((productItem) => {
                     orderItemStr += `${productItem.title} * ${productItem.quantity}<br>`
+
+                    if (productRevenue[productItem.title] === undefined) {
+                        productRevenue[productItem.title] = 0;
+                    }
+                    productRevenue[productItem.title] += productItem.price * productItem.quantity;
                 })
 
                 let orderState = '';
@@ -64,6 +70,38 @@ function showOrderList() {
                 </tr>
                 `;
             })
+
+            // console.log(productRevenue);
+
+            let productRevenueName = Object.keys(productRevenue);
+
+            let chartData = [];
+
+            productRevenueName.forEach((item, index) => {
+                chartData.push([
+                    item, productRevenue[item]
+                ]);
+
+            })
+
+            chartData.sort((itemA, itemB) => {
+                return itemB[1] - itemA[1];
+            })
+
+            if (chartData.length > 3) {
+                let otherTotal = 0;
+                chartData.forEach((item, index) => {
+                    if (index > 2) {
+                        otherTotal += item[1];
+                    }
+                })
+                chartData.splice(3, chartData.length - 3);
+                chartData.push(['其它', otherTotal])
+            }
+
+            // console.log(chartData);
+
+            chart(chartData);
 
             orderTable.innerHTML = str;
         })
@@ -134,4 +172,14 @@ function changeState(id, paid) {
         .catch((err) => {
             console.log(err.response);
         })
+}
+
+function chart(data) {
+    let chart = c3.generate({
+        bindto: "#chart",
+        data: {
+            columns: data,
+            type: 'donut'
+        }
+    });
 }
